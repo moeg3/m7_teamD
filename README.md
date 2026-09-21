@@ -29,8 +29,6 @@
 | `shop_url` | TEXT | - | 通販サイトの購入先リンクURL |
 
 ### データベース構造（ER図）
-
-```mermaid
 %%{init: {'er': {'layoutDirection': 'LR'}}}%%
 erDiagram
     USERS ||--o{ ITEMS : "配置する (1対多)"
@@ -42,8 +40,8 @@ erDiagram
     }
 
     ITEMS {
-        INT id PK "配置パーツの背番号 (主キー)"
-        INT user_id FK "誰が配置したか (USERSのid)"
+        INT id PK "配置データの背番号 (主キー)"
+        INT user_id FK "誰の配置か (USERSのid)"
         VARCHAR name "パーツ名"
         INT price "価格"
         DECIMAL width_mm "横幅 (mm)"
