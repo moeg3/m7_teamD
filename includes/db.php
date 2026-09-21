@@ -1,5 +1,5 @@
 // データベースに接続するときに使用
-// データベースを使いたいときはphp内でrequire_once 'includes/db.php';を記述
+// データベースを使いたいときはphp内でrequire_once '../includes/db.php';を記述
 <?php
     // DB接続
     // 自分のDBのdsn・user名・パスワードに変更
@@ -12,7 +12,9 @@
         $dsn,
         $user,
         $password,
-        array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING)
+        [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ]
     );
 
     try {

@@ -1,3 +1,5 @@
 // GitHub上に挙げないファイルの指定
 .env
 assets/images/parts/*
+docker-compose.yml
+Dockerfile
