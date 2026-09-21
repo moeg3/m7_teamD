@@ -1,12 +1,3 @@
-<?php
-    CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        user_name VARCHAR(50) NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-?>
-
 <!DOCTYPE html>
 <html lang="ja">
     <head>
