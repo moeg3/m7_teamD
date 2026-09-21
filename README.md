@@ -1,3 +1,6 @@
+### データベース構造（ER図）
+
+```mermaid
 erDiagram
     USERS ||--o{ ITEMS : "配置する (1対多)"
 
