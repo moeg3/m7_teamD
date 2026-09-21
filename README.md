@@ -31,6 +31,7 @@
 ### データベース構造（ER図）
 
 ```mermaid
+%%{init: {'er': {'layoutDirection': 'LR'}}}%%
 erDiagram
     USERS ||--o{ ITEMS : "配置する (1対多)"
 
