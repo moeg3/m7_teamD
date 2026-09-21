@@ -6,7 +6,7 @@ require_once 'includes/header.php';
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
-        <title>MyPage_desu</title>
+        <title>MyPage</title>
         <link rel="stylesheet" href="asetts/css/style.css">
     </head>
     <body>
