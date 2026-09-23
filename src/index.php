@@ -34,8 +34,8 @@ $user_name = $_SESSION['user_name'] ?? 'ユーザー1';
 
     <!-- 投稿・編集 -->
     <div>
-        <a href="post.php">投稿</a>
-        <a href="edit.php">編集</a>
+        <a href="workspace.php">投稿</a>
+        <a href="mypage.php">編集</a>
     </div>
 
     <hr>
