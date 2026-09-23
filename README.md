@@ -8,7 +8,8 @@
 ### データベース構造（ER図）
 ```mermaid
 %%{init: {'er': {'layoutDirection': 'LR'}}}%%
-users ||--o{ items : "配置 (1対多)"
+erDiagram
+    users ||--o{ items : "配置 (1対多)"
     parts ||--o{ items : "参照 (1対多)"
 
     users {
