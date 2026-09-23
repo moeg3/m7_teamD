@@ -7,7 +7,7 @@ require_once '../includes/header.php';
     <head>
         <meta charset="UTF-8">
         <title>MyPage</title>
-        <link rel="stylesheet" href="asetts/css/style.css">
+        <link rel="stylesheet" href="../asetts/css/style.css">
     </head>
     <body>
     </body>
