@@ -1,45 +1,9 @@
-## テーブル定義
+## テーブル設計
 | テーブル名 | 役割とポイント |
 | :-------- | :----- |
 | `USERS` | ユーザーの基本情報を管理します。パスワードは生のままではなく、後ほどPHP側で暗号化して保存する仕組みにします。 |
 | `PARTS` | システムで使えるパーツのカタログ（マスターデータ）です。ミリ単位のサイズを扱う `width_mm` と `height_mm` には小数を保存できる型（DECIMAL）を設定します。ここを独立させたことで、同じパーツの無駄な重複保存を防げます。 |
 | `ITEMS` | キャンバスに置かれたパーツの履歴を管理します。`user_id` と `part_id`（外部キー）があるおかげで、「誰が」「どのパーツを」置いたのかが一瞬で見分けられます。新設した `work_id` により、複数のパーツを1つの作品としてグループ化できます。 |
-
-### データベース構造（ER図）
-```mermaid
-%%{init: {'er': {'layoutDirection': 'LR'}}}%%
-erDiagram
-    users ||--o{ items : "配置 (1対多)"
-    parts ||--o{ items : "参照 (1対多)"
-
-    users {
-        int id PK
-        varchar(50) user_name
-        varchar(255) password
-        timestamp created_at
-    }
-
-    parts {
-        int id PK
-        varchar(100) parts_name
-        int price
-        decimal(5_2) width_mm
-        decimal(5_2) height_mm
-        varchar(255) image_path
-        text url_link
-        timestamp created_at
-    }
-
-    items {
-        int id PK
-        int user_id FK
-        int part_id FK
-        int work_id
-        int x_set
-        int y_set
-        int rotation
-        timestamp created_at
-    }
 
 ### USERS テーブル（ユーザー情報）
 
@@ -75,3 +39,41 @@ erDiagram
 | `y_set` | INT | - | キャンバス上のY座標 |
 | `rotation` | INT | - | パーツの回転角度 |
 | `created_at` | TIMESTAMP | - | データ保存日時 |
+
+### ER図
+
+```mermaid
+%%{init: {'er': {'layoutDirection': 'LR'}}}%%
+erDiagram
+    USERS ||--o{ ITEMS : "配置 (1対多)"
+    PARTS ||--o{ ITEMS : "参照 (1対多)"
+
+    USERS {
+        INT id PK
+        VARCHAR(50) user_name
+        VARCHAR(255) password
+        TIMESTAMP created_at
+    }
+
+    PARTS {
+        INT id PK
+        VARCHAR(100) parts_name
+        INT price
+        DECIMAL(5_2) width_mm
+        DECIMAL(5_2) height_mm
+        VARCHAR(255) image_path
+        TEXT url_link
+        TIMESTAMP created_at
+    }
+
+    ITEMS {
+        INT id PK
+        INT user_id FK
+        INT part_id FK
+        INT work_id
+        INT x_set
+        INT y_set
+        INT rotation
+        TIMESTAMP created_at
+    }
+```
