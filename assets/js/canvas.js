@@ -115,13 +115,22 @@ document.getElementById('save-btn').addEventListener('click', () => {
         return;
     }
 
+    // Konvaの機能でキャンバスのスクリーンショットを撮影（Base64文字列に変換）
+    const dataURL = stage.toDataURL({ pixelRatio: 1 });
+
+    // 画像データとパーツデータの両方を1つの荷物にまとめる
+    const workData = {
+        thumbnail: dataURL,
+        items: itemsData
+    };
+
     // fetchを使って、画面を切り替えずに裏側でPHPへデータを送信する
     fetch('workspace.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(itemsData) // データをJSON形式に変換して送る
+        body: JSON.stringify(workData) // データをJSON形式に変換して送る
     })
     .then(response => {
         console.log('HTTPステータス:', response.status);

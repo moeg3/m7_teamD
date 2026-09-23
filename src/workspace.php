@@ -2,30 +2,70 @@
 // データベース接続と共通ヘッダーの読み込み
 require_once '/var/www/includes/db.php';
 
+// 作品完了ボタンを押したときの処理
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 送られてきたJSONデータを読み込む
     $json = file_get_contents('php://input');
-    $items = json_decode($json, true);
+    $data = json_decode($json, true);
 
-    if ($items !== null) {
+    if ($data !== null && isset($data['thumbnail']) && isset($data['items'])) {
+        $items = $data['items'] ?? [];
+        $thumbnail = $data['thumbnail'] ?? '';
+
         try {
-            // ※現在はログイン機能がないため、ユーザーID: 1 を仮に使用します
+            // ※現在はログイン機能がないため、ユーザーID: 1 を仮に使用
             $user_id = 1;
 
             $pdo->beginTransaction();
 
-            $workStmt = $pdo->prepare(
+            // itemsテーブル内のwork_idを取得して設定
+            $workIdStmt = $pdo->prepare(
                 'SELECT COALESCE(MAX(work_id), 0) + 1
                  FROM items
                  WHERE user_id = :user_id'
             );
 
-            $workStmt->execute([
+            $workIdStmt->execute([
                 ':user_id' => $user_id
             ]);
 
-            $work_id = (int)$workStmt->fetchColumn();
+            $work_id = (int)$workIdStmt->fetchColumn();
 
+            // 作品サムネイルの画像ファイルを保存
+            $uploadDirectory = '/var/www/html/assets/images/works/';
+
+            if (!is_dir($uploadDirectory)) {
+                mkdir($uploadDirectory, 0775, true);
+            }
+
+            preg_match('/^data:image\/png;base64,(.+)$/', $thumbnail, $matches);
+
+            $imageData = base64_decode($matches[1], true);
+
+            $fileName = 'user' . $user_id . 'work' . $work_id . '.png';
+            $filePath = $uploadDirectory . $fileName;
+
+            if (file_put_contents($filePath, $imageData) === false) {
+                throw new RuntimeException('画像の保存に失敗しました');
+            }
+
+            $thumbnail_path = 'assets/images/works/' . $fileName;
+
+            // worksテーブル内にデータを追加
+            $thumbStmt = $pdo->prepare(
+                'INSERT INTO works
+                (user_id, work_id, thumbnail_path)
+                VALUES
+                (:user_id, :work_id, :thumbnail_path)'
+            );
+
+            $thumbStmt->execute([
+                ':user_id' => $user_id,
+                ':work_id' => $work_id,
+                ':thumbnail_path' => $thumbnail_path
+            ]);
+
+            // itemsテーブル内にデータを追加
             $itemStmt = $pdo->prepare(
                 'INSERT INTO items
                 (user_id, part_id, work_id, x_set, y_set, rotation)
@@ -46,8 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->commit();
             
-            // JavaScript側に成功メッセージだけを返して、ここでPHPを強制終了（exit）する
-            // ※これをしないと、この後のHTML（画面）まで一緒に裏側で送られてしまいます
+            // JavaScript側に成功メッセージだけを返して、ここでPHPを強制終了（exit）
             echo count($items) . " 件のパーツデータをデータベースに記録しました。";
             exit; 
             
