@@ -71,6 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if(!$isValid) {
+        if ($imagePath !== '') {
+        unlink('/var/www/html' . $imagePath);
+        }
+
         foreach ($errors as $error) {
             echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . '<br>';
         }

@@ -1,12 +1,14 @@
 <?php
 // 自分で作成したキャンバスを一覧表示するページ
 require_once '/var/www/includes/functions.php';
+require_once '/var/www/includes/db.php';
 
-// $works にはデータベースから取得した作品一覧が入っていると仮定
-// foreach ($works as $work) {
-//     // ログイン中のユーザーID（例: セッションから取得）を渡すだけで、関数が勝手に判断してくれます
-//     echo render_work_card($work, $_SESSION['user_id']); 
-// }
+$current_user_id = 1;
+
+// 自分の作品だけを取得
+$stmt = $pdo->prepare("SELECT * FROM works WHERE user_id = :user_id ORDER BY created_at DESC");
+$stmt->execute([':user_id' => $current_user_id]);
+$my_works = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -17,5 +19,11 @@ require_once '/var/www/includes/functions.php';
     </head>
     <body>
         <p>画面遷移完了！</p>
+        <h2>マイページ（自分の作品）</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+            <?php foreach ($my_works as $work): ?>
+                <?php render_work_card($work, $current_user_id); ?>
+            <?php endforeach; ?>
+        </div>
     </body>
 </html>

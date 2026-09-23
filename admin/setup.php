@@ -35,8 +35,28 @@ try {
     $pdo->exec($sql_parts);
     echo "partsテーブルの作成完了。<br>";
 
+    // 3. works 作品全体を管理するテーブル
+    $sql_works = "
+        CREATE TABLE IF NOT EXISTS works (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            work_id INT NOT NULL,
+            title VARCHAR(100) NOT NULL DEFAULT '無題の作品',
+            thumbnail_path VARCHAR(255),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            
+            FOREIGN KEY (user_id)
+            REFERENCES users(id)
+            ON DELETE CASCADE,
 
-    // 3. items テーブルの作成
+            UNIQUE KEY unique_user_work (user_id, work_id)
+        )
+    ";
+    $pdo->exec($sql_works);
+    echo "worksテーブルの作成完了。<br>";
+
+
+    // 4. items テーブルの作成
     $sql_items = "
         CREATE TABLE IF NOT EXISTS items (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,10 +67,20 @@ try {
             y_set INT NOT NULL DEFAULT 0,
             rotation INT NOT NULL DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (part_id) REFERENCES parts(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id)
+            REFERENCES users(id)
+            ON DELETE CASCADE,
+
+            FOREIGN KEY (part_id)
+                REFERENCES parts(id)
+                ON DELETE CASCADE,
+
+            FOREIGN KEY (user_id, work_id)
+                REFERENCES works(user_id, work_id)
+                ON DELETE CASCADE,
+
             INDEX idx_user_work (user_id, work_id)
-        )
+            )
     ";
     $pdo->exec($sql_items);
     echo "itemsテーブルの作成完了。<br>";
