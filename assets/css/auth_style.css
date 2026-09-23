@@ -1,0 +1,91 @@
+/*ログイン・新規登録画面　用　style*/
+
+/* ページ全体 */ 
+body { 
+margin: 0;
+padding: 0;
+font-family: Arial, "Noto Sans JP", sans-serif;
+background-color: #f4f6f8; color: #333; 
+
+/* 中央に配置 */ 
+display: flex;
+justify-content: center;
+align-items: center; 
+min-height: 100vh; 
+}
+
+/* フォームを囲むカード */ 
+.form-container {
+width: 360px; 
+padding: 40px;
+background-color: white;
+border-radius: 15px; 
+box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+} 
+
+/* タイトル */ 
+.form-container h1 {
+text-align: center;
+margin-bottom: 30px; 
+font-size: 28px; 
+color: #333;
+} 
+
+/* ラベル */ 
+.form-container label {
+display: block;
+margin-bottom: 8px; 
+font-size: 14px; 
+font-weight: bold;
+}
+
+/* 入力欄 */ 
+.form-container input[type="text"], .form-container input[type="password"] 
+{
+width: 100%; 
+box-sizing: border-box; 
+padding: 12px;
+margin-bottom: 20px;
+border: 1px solid #ccc;
+border-radius: 8px;
+font-size: 16px;
+outline: none;
+}
+
+/* 入力欄をクリックしたとき */ 
+.form-container input[type="text"]:focus, .form-container input[type="password"]:focus{ 
+border-color: #4a90e2;
+}
+
+/* ボタン */
+.form-container input[type="submit"]{
+width: 100%;
+padding: 13px;
+border: none;
+border-radius: 8px;
+background-color: #4a90e2; 
+color: white;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+}
+
+/* ボタンにマウスを乗せたとき */ 
+.form-container input[type="submit"]:hover{
+background-color: #357abd;
+}
+
+/* ページ下部のリンク */ 
+.form-link {
+text-align: center; margin-top: 20px;
+}
+
+/* リンク */ 
+.form-link a {
+color: #4a90e2;
+text-decoration: none;
+}
+
+.form-link a:hover {
+text-decoration: underline;
+}
