@@ -1,68 +1,145 @@
+const containerElement = document.getElementById('canvas-container');
+
 // 1. キャンバスの初期設定
 const stage = new Konva.Stage({
     container: 'canvas-container',
-    width: 600,
-    height: 500
+    width: containerElement.offsetWidth || 600, 
+    height: containerElement.offsetHeight || 500
 });
 const layer = new Konva.Layer();
 stage.add(layer);
 
-// ★追加・変更1：基準となる「1mmあたりのピクセル数」を定義する
-// （後でカードケースや画面サイズに合わせてこの数値を動的に変更します。今は仮に「1mm = 4ピクセル」とします）
-const PX_PER_MM = 4; 
-
-// ★変更2：Transformerの設定を変更し、サイズ変更ハンドルを消す
+const PX_PER_MM = 0.5; // 変更必要 標準は4
 const tr = new Konva.Transformer({
-    enabledAnchors: [], // 四隅の四角（リサイズ用のアンカー）を空にして非表示にする
-    rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315] // おまけ：45度ずつピタッと止まるようにすると使いやすいです
+    enabledAnchors: [], 
+    rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315]
 });
 layer.add(tr);
 
 stage.on('click tap', function (e) {
-    if (e.target === stage) {
-        tr.nodes([]);
-    }
+    if (e.target === stage) tr.nodes([]);
 });
 
-let draggedColor = null;
-
-// ★追加・変更3：パーツが持つ「実際のミリ数」をHTMLから取得できるようにする
-let draggedSizeMm = null; 
-
+// 2. ドラッグ開始：ブラウザのポケットに直接データをねじ込む
 document.querySelectorAll('.drag-item').forEach(item => {
     item.addEventListener('dragstart', (e) => {
-        draggedColor = e.target.getAttribute('data-color');
-        // HTML側に追加する data-size-mm 属性からサイズ（mm）を取得する。無ければ仮に10mmとする
-        draggedSizeMm = parseFloat(e.target.getAttribute('data-size-mm')) || 10; 
+        const dataToTransfer = JSON.stringify({
+            src: e.currentTarget.dataset.imagePath,
+            sizeMm: parseFloat(e.currentTarget.dataset.sizeMm) || 10,
+            partId: e.currentTarget.dataset.partId
+        });
+
+        console.log('ドラッグデータ:', dataToTransfer);
+
+        e.dataTransfer.setData('application/json', dataToTransfer);
+        e.dataTransfer.effectAllowed = 'copy';
     });
 });
 
-const container = document.getElementById('canvas-container');
-container.addEventListener('dragover', (e) => { e.preventDefault(); });
-
-container.addEventListener('drop', (e) => {
+// 3. ドロップ時の処理
+containerElement.addEventListener('dragover', (e) => {
     e.preventDefault();
-    stage.setPointersPositions(e);
-    const pointerPosition = stage.getPointerPosition();
+    e.dataTransfer.dropEffect = 'copy';
+});
 
-    // ★追加・変更4：「ミリ数 × 1mmのピクセル数」で、画面上の実際の表示サイズ（ピクセル）を計算する
-    const displaySizePx = draggedSizeMm * PX_PER_MM;
+containerElement.addEventListener('drop', (e) => {
+    e.preventDefault();
 
-    const newShape = new Konva.Rect({
-        x: pointerPosition.x - (displaySizePx / 2),
-        y: pointerPosition.y - (displaySizePx / 2),
-        width: displaySizePx,
-        height: displaySizePx,
-        fill: draggedColor,
-        draggable: true,
-        // 回転の中心を図形の真ん中に設定する（これをしないと左上を軸に回ってしまいます）
-        offsetX: displaySizePx / 2,
-        offsetY: displaySizePx / 2
+    const dataString = e.dataTransfer.getData('application/json');
+
+    if (!dataString) {
+        console.error('ドラッグデータを取得できません');
+        return;
+    }
+
+    const draggedData = JSON.parse(dataString);
+
+    console.log('ドロップデータ:', draggedData);
+
+    const rect = containerElement.getBoundingClientRect();
+    const dropX = e.clientX - rect.left;
+    const dropY = e.clientY - rect.top;
+    const sizePx = draggedData.sizeMm * PX_PER_MM;
+
+    const image = new Image();
+
+    image.onload = () => {
+        console.log('画像読み込み成功:', draggedData.src);
+
+        const imageNode = new Konva.Image({
+            image: image,
+            x: dropX,
+            y: dropY,
+            width: sizePx,
+            height: sizePx,
+            offsetX: sizePx / 2,
+            offsetY: sizePx / 2,
+            draggable: true,
+            partId: draggedData.partId
+        });
+
+        imageNode.on('click tap', () => {
+            tr.nodes([imageNode]);
+        });
+
+        layer.add(imageNode);
+        layer.draw();
+    };
+
+    image.onerror = () => {
+        console.error('画像読み込み失敗:', draggedData.src);
+        alert('画像を読み込めませんでした: ' + draggedData.src);
+    };
+
+    image.src = draggedData.src;
+});
+
+// 4. 保存ボタンを押したときの処理
+document.getElementById('save-btn').addEventListener('click', () => {
+    // キャンバス上の画像（パーツ）だけをすべて取得
+    const partsOnCanvas = layer.getChildren(node => node.className === 'Image');
+    const itemsData = [];
+
+    // それぞれのパーツの情報を配列にまとめる
+    partsOnCanvas.forEach(node => {
+        itemsData.push({
+            partId: node.getAttr('partId'), // 設定しておいたパーツID
+            x: Math.round(node.x()),        // 座標（小数点を四捨五入）
+            y: Math.round(node.y()),
+            rotation: Math.round(node.rotation()) // 回転角度
+        });
     });
 
-    newShape.on('click tap', function () {
-        tr.nodes([this]);
-    });
+    if (itemsData.length === 0) {
+        alert("キャンバスにパーツがありません。");
+        return;
+    }
 
-    layer.add(newShape);
+    // fetchを使って、画面を切り替えずに裏側でPHPへデータを送信する
+    fetch('workspace.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(itemsData) // データをJSON形式に変換して送る
+    })
+    .then(response => {
+        console.log('HTTPステータス:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTPエラー: ${response.status}`);
+        }
+
+        return response.text();
+    })
+    .then(result => {
+        console.log('保存結果:', result);
+        alert("保存が完了しました！\n" + result);
+        window.location.href = './mypage.php';
+    })
+    .catch(error => {
+        console.error('保存エラー:', error);
+        alert("保存通信に失敗しました。");
+        console.error(error);
+    });
 });
