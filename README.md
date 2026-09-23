@@ -31,24 +31,34 @@
 ### データベース構造（ER図）
 ```mermaid
 %%{init: {'er': {'layoutDirection': 'LR'}}}%%
-erDiagram
-    USERS ||--o{ ITEMS : "配置する (1対多)"
+users ||--o{ items : "配置 (1対多)"
+    parts ||--o{ items : "参照 (1対多)"
 
-    USERS {
-        INT id PK "ユーザーの背番号 (主キー)"
-        VARCHAR user_name "ユーザー名"
-        VARCHAR password "パスワード"
+    users {
+        int id PK
+        varchar(50) user_name
+        varchar(255) password
+        timestamp created_at
     }
 
-    ITEMS {
-        INT id PK "配置パーツの背番号 (主キー)"
-        INT user_id FK "誰が配置したか (USERSのid)"
-        VARCHAR name "パーツ名"
-        INT price "価格"
-        DECIMAL width_mm "横幅 (mm)"
-        DECIMAL height_mm "縦幅 (mm)"
-        INT x_set "X座標"
-        INT y_set "Y座標"
-        VARCHAR image_path "画像ファイル名"
-        TEXT shop_url "購入先リンク"
+    parts {
+        int id PK
+        varchar(100) parts_name
+        int price
+        decimal(5_2) width_mm
+        decimal(5_2) height_mm
+        varchar(255) image_path
+        text url_link
+        timestamp created_at
+    }
+
+    items {
+        int id PK
+        int user_id FK
+        int part_id FK
+        int work_id
+        int x_set
+        int y_set
+        int rotation
+        timestamp created_at
     }
