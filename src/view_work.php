@@ -94,7 +94,8 @@ $imagePath = htmlspecialchars(
 <head>
     <meta charset="UTF-8">
     <title><?= $title ?></title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/header_style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
     <!-- ★ヘッダー表示 -->
@@ -116,7 +117,7 @@ $imagePath = htmlspecialchars(
         <?php else: ?>
             <ul>
                 <?php foreach ($partSummary as $part): ?>
-                    <li>
+                    <li style="margin-bottom: 16px;">
                         <?= htmlspecialchars($part['name'], ENT_QUOTES, 'UTF-8') ?>
                         × <?= $part['count'] ?>個
                         （<?= number_format($part['price']) ?>円/
@@ -126,7 +127,7 @@ $imagePath = htmlspecialchars(
                                 href="<?= htmlspecialchars($part['url'], ENT_QUOTES, 'UTF-8') ?>"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style="margin-left: 10px; padding: 4px 8px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;"
+                                style="display: inline-block; margin-left: 16px; padding: 4px 8px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;"
                             >パーツを購入</a>
                         <?php endif; ?>
                     </li>

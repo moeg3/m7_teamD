@@ -161,10 +161,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $stmt = $pdo->query("SELECT * FROM parts ORDER BY id ASC");
 $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkSpace</title>
+    <link rel="stylesheet" href="/assets/css/header_style.css">
+    <link rel="stylesheet" href="/assets/css/workspace_style.css">
+</head>
 <body>
     <!-- ★ヘッダー表示 -->
     <?php require_once '/var/www/includes/header.php'; ?>
-
     <main>
         <h2>作業キャンバス</h2>
 
