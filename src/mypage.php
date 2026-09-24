@@ -25,10 +25,9 @@ $my_works = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <link rel="stylesheet" href="../asetts/css/style.css">
     </head>
     <body>
-        // ★ヘッダー表示
+        <!-- ★ヘッダー表示 -->
         <?php require_once '/var/www/includes/header.php'; ?>
 
-        <p>画面遷移完了！</p>
         <h2>マイページ（自分の作品）</h2>
         <div style="display: flex; flex-wrap: wrap; gap: 20px;">
             <?php foreach ($my_works as $work): ?>

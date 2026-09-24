@@ -108,7 +108,7 @@ $stmt = $pdo->query("SELECT * FROM parts ORDER BY id ASC");
 $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <body>
-    // ★ヘッダー表示
+    <!-- ★ヘッダー表示 -->
     <?php require_once '/var/www/includes/header.php'; ?>
 
     <main>

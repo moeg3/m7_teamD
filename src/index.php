@@ -46,7 +46,7 @@ $all_works = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
-    // ★ヘッダー表示
+    <!-- ★ヘッダー表示 -->
     <?php require_once '/var/www/includes/header.php'; ?>
 
     <h1>ホーム</h1>
