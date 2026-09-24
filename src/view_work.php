@@ -33,6 +33,7 @@ $itemStmt = $pdo->prepare(
     'SELECT
         parts.parts_name,
         parts.price,
+        parts.url_link,
         items.part_id
      FROM items
      INNER JOIN parts
@@ -55,11 +56,19 @@ $totalPrice = 0;
 foreach ($items as $item) {
     $partId = (int)$item['part_id'];
     $price = (int)$item['price'];
+    $purchaseUrl = trim((string)($item['url_link'] ?? ''));
+    $purchaseUrlIsValid = filter_var($purchaseUrl, FILTER_VALIDATE_URL)
+        && in_array(
+            strtolower((string)parse_url($purchaseUrl, PHP_URL_SCHEME)),
+            ['http', 'https'],
+            true
+        );
 
     if (!isset($partSummary[$partId])) {
         $partSummary[$partId] = [
             'name' => $item['parts_name'],
             'price' => $price,
+            'url' => $purchaseUrlIsValid ? $purchaseUrl : null,
             'count' => 0,
         ];
     }
@@ -112,6 +121,14 @@ $imagePath = htmlspecialchars(
                         × <?= $part['count'] ?>個
                         （<?= number_format($part['price']) ?>円/
                         個）
+                        <?php if ($part['url'] !== null): ?>
+                            <a
+                                href="<?= htmlspecialchars($part['url'], ENT_QUOTES, 'UTF-8') ?>"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style="margin-left: 10px; padding: 4px 8px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;"
+                            >パーツを購入</a>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>

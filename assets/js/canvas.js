@@ -3,11 +3,43 @@ const containerElement = document.getElementById('canvas-container');
 // 1. キャンバスの初期設定
 const stage = new Konva.Stage({
     container: 'canvas-container',
-    width: containerElement.offsetWidth || 600, 
+    width: containerElement.offsetWidth || 800, 
     height: containerElement.offsetHeight || 500
 });
 const layer = new Konva.Layer();
 stage.add(layer);
+
+// 方眼紙に設定
+const gridSize = 20;
+const gridBackground = new Konva.Shape({
+    name: 'grid-background',
+    listening: false,
+    sceneFunc: (context, shape) => {
+        const width = stage.width();
+        const height = stage.height();
+
+        context.fillStyle = '#F5E6D3';
+        context.fillRect(0, 0, width, height);
+
+        context.strokeStyle = '#dce6f0';
+        context.lineWidth = 1;
+        for (let x = 0; x <= width; x += gridSize) {
+            context.beginPath();
+            context.moveTo(x + 0.5, 0);
+            context.lineTo(x + 0.5, height);
+            context.stroke();
+        }
+        for (let y = 0; y <= height; y += gridSize) {
+            context.beginPath();
+            context.moveTo(0, y + 0.5);
+            context.lineTo(width, y + 0.5);
+            context.stroke();
+        }
+
+        context.fillStrokeShape(shape);
+    }
+});
+layer.add(gridBackground);
 
 function addPartToCanvas(partData, x, y, rotation = 0) {
     const image = new Image();
@@ -58,7 +90,36 @@ function updateTotalPrice() {
     totalPriceElement.textContent = totalPrice.toLocaleString();
 }
 
-const PX_PER_MM = 0.8; // 変更必要 標準は4
+const PX_PER_MM = 4;
+const cardWidthPx = 63 * PX_PER_MM;
+const cardHeightPx = 88 * PX_PER_MM;
+
+const cardShape = new Konva.Rect({
+    name: 'card-guide',
+    x: (stage.width() - cardWidthPx) / 2,
+    y: (stage.height() - cardHeightPx) / 2,
+    width: cardWidthPx,
+    height: cardHeightPx,
+    fill: '#FFF8F0',
+    stroke: '#4A3B32',
+    strokeWidth: 2,
+    listening: false
+});
+layer.add(cardShape);
+
+const cardBorderLayer = new Konva.Layer();
+const cardBorder = new Konva.Rect({
+    name: 'card-border',
+    x: cardShape.x(),
+    y: cardShape.y(),
+    width: cardWidthPx,
+    height: cardHeightPx,
+    stroke: '#4A3B32',
+    strokeWidth: 2,
+    listening: false
+});
+cardBorderLayer.add(cardBorder);
+stage.add(cardBorderLayer);
 
 const tr = new Konva.Transformer({
     enabledAnchors: [], 

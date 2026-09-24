@@ -172,7 +172,17 @@ $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div style="display: flex; gap: 20px;">
 
             <!-- 左側：キャンバスエリア -->
-            <div id="canvas-container" style="background-color: #f0f0f0; width: 100%; max-width: 800px; height: 500px; border: 1px solid #ccc; margin: 0 auto;"></div>
+            <div
+                id="canvas-container"
+                style="
+                    width: min(75vw, 1000px);
+                    height: min(70vh, 700px);
+                    min-height: 500px;
+                    background-color: #e5e5e5;
+                    border: 1px solid #999;
+                    margin: 0 auto;
+                "
+            ></div>
             
             <!-- 右側：パーツのパレットエリア -->
             <div id="palette" style="width: 150px; background-color: #fff; border: 1px solid #ccc; padding: 10px;">

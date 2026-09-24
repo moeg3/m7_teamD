@@ -31,9 +31,10 @@ function render_work_card($work, $current_user_id = null) {
         // 自分の作品の場合（マイページなど）：編集と削除ボタンを表示
         echo '<a href="workspace.php?edit_id=' . $work_id . '" style="padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">編集</a>';
         
-        echo '<form action="delete_work.php" method="POST" onsubmit="return confirm(\'本当に削除しますか？\');" style="margin: 0;">';
+        echo '<form action="mypage.php" method="POST" onsubmit="return confirm(\'本当に削除しますか？\');" style="margin: 0;">';
         echo '<input type="hidden" name="work_id" value="' . $work_id . '">';
         echo '<button type="submit" style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">削除</button>';
+        echo '<a href="view_work.php?id=' . $work_id . '" style="padding: 5px 10px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">詳細を見る</a>';
         echo '</form>';
     } else {
         // 他人の作品の場合（インデックスなど）：閲覧ボタンのみを表示
