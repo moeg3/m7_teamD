@@ -1,0 +1,177 @@
+/* ========================= 全体 ========================= */ 
+body
+{
+margin: 0;
+padding: 0;
+background: #fff8ef;
+color: #6b5548;
+font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; 
+}
+
+/* ========================= ページ全体 ========================= */
+.admin-page
+{
+max-width: 900px;
+margin: 40px auto; 
+padding: 0 20px 50px;
+}
+
+/* ========================= タイトル ========================= */
+h1
+{
+text-align: center; 
+color: #e9954f;
+font-size: 30px;
+margin: 0 0 10px; 
+letter-spacing: 2px;
+}
+
+h2
+{
+color: #e9954f; 
+font-size: 22px; 
+margin: 40px 0 20px;
+}
+
+h3
+{
+color: #d8752f;
+font-size: 17px;
+margin-top: 25px;
+}
+
+/* ========================= 説明文 ========================= */ 
+p
+{
+color: #8a7062; 
+font-size: 14px; 
+}
+
+/* ========================= DB作成エリア ========================= */
+.setup-area { 
+background: white; 
+border: 2px solid #f6d7b8;
+border-radius: 20px;
+padding: 25px;
+box-shadow: 0 6px 20px rgba(220, 150, 90, 0.15); margin-bottom: 30px;
+}
+
+/* 作成リンク */
+.setup-area a
+{
+display: inline-block; 
+padding: 9px 22px;
+background: #f5b56f;
+color: white;
+border-radius: 20px; 
+text-decoration: none;
+font-size: 14px; 
+font-weight: bold; 
+transition: 0.2s;
+}
+
+.setup-area a:hover 
+{
+background: #e8893f;
+transform: translateY(-2px); 
+box-shadow: 0 5px 12px rgba(220, 140, 60, 0.25);
+}
+
+
+/* ========================= 登録フォーム ========================= */
+form
+{
+background: white; 
+border: 2px solid #f6d7b8;
+border-radius: 25px;
+padding: 30px 35px;
+box-shadow: 0 6px 20px rgba(220, 150, 90, 0.15); 
+box-sizing: border-box;
+}
+
+/* ========================= ラベル・説明 ========================= */
+form p
+{
+color: #6b5548;
+font-size: 14px; 
+font-weight: bold;
+margin: 18px 0 8px;
+}
+
+/* ========================= テキスト入力 ========================= */ 
+form input[type="text"], form input[type="number"], form input[type="file"] 
+{
+width: 100%;
+padding: 11px 13px;
+box-sizing: border-box;
+background: #fffaf5;
+border: 2px solid #f3d2b0;
+border-radius: 12px;
+color: #6b5548;
+font-size: 14px; 
+outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+} 
+
+/* 入力中 */
+form input[type="text"]:focus, form input[type="number"]:focus
+{
+border-color: #f0a866;
+box-shadow: 0 0 0 3px rgba(240, 168, 102, 0.2); 
+}
+
+/* ========================= ファイル選択 ========================= */ 
+form input[type="file"] 
+{
+padding: 9px; cursor: pointer; 
+}
+
+/* ========================= 登録ボタン ========================= */
+form input[type="submit"]
+{
+display: block;
+width: 220px;
+margin: 30px auto 0; 
+padding: 13px; 
+border: none;
+border-radius: 30px;
+background: linear-gradient( 135deg, #f5b56f, #e8893f ); 
+color: white;
+font-size: 16px; 
+font-weight: bold;
+cursor: pointer;
+box-shadow: 0 5px 12px rgba(220, 140, 60, 0.25); 
+transition: transform 0.2s, box-shadow 0.2s; } 
+
+/* 登録ボタンにマウスを乗せたとき */ 
+form input[type="submit"]:hover 
+{
+background: #e8893f; 
+transform: translateY(-2px);
+box-shadow: 0 8px 18px rgba(220, 140, 60, 0.3);
+}
+
+/* ========================= 成功・エラー表示 ========================= */
+.success-message
+{
+background: #fffaf5; 
+border: 2px solid #f0c89f;
+border-radius: 15px; 
+padding: 15px 20px;
+color: #d8752f;
+font-weight: bold;
+margin-bottom: 20px;
+}
+
+.error-message
+{
+background: #fff5f0;
+border: 2px solid #efc0a0;
+border-radius: 15px;
+padding: 15px 20px;
+color: #c65f35; 
+font-weight: bold; 
+margin-bottom: 20px;
+}
+
+
