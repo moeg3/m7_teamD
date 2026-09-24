@@ -1,15 +1,15 @@
 <?php
 session_start();
 
+// ★データベース接続
+require_once '/var/www/includes/db.php';
+
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     exit('ログインが必要です');
 }
 
 $user_id = (int)$_SESSION['user_id'];
-
-// データベース接続と共通ヘッダーの読み込み
-require_once '/var/www/includes/db.php';
 
 // 作品完了ボタンを押したときの処理
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -106,10 +106,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $stmt = $pdo->query("SELECT * FROM parts ORDER BY id ASC");
 $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-require_once '/var/www/includes/header.php';
 ?>
 <body>
+    // ★ヘッダー表示
     <?php require_once '/var/www/includes/header.php'; ?>
 
     <main>
@@ -145,6 +144,5 @@ require_once '/var/www/includes/header.php';
         <script src="https://unpkg.com/konva@9.3.1/konva.min.js"></script>
         <!-- メインの処理を書くJSファイル -->
         <script src="assets/js/canvas.js"></script>
-        
     </main>
 </body>
