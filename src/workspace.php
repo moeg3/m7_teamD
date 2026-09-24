@@ -11,6 +11,55 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = (int)$_SESSION['user_id'];
 
+// 編集ボタンを押したとき
+$edit_id = filter_input(INPUT_GET, 'edit_id', FILTER_VALIDATE_INT);
+$edit_work = null;
+$edit_items = [];
+
+if ($edit_id !== false && $edit_id !== null) {
+    $workStmt = $pdo->prepare(
+        'SELECT *
+         FROM works
+         WHERE id = :id
+           AND user_id = :user_id'
+    );
+
+    $workStmt->execute([
+        ':id' => $edit_id,
+        ':user_id' => $user_id
+    ]);
+
+    $edit_work = $workStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($edit_work) {
+        $itemStmt = $pdo->prepare(
+            'SELECT
+                items.part_id,
+                items.x_set,
+                items.y_set,
+                items.rotation,
+                parts.image_path,
+                parts.parts_name,
+                parts.price,
+                parts.width_mm,
+                parts.height_mm
+             FROM items
+             INNER JOIN parts
+                ON parts.id = items.part_id
+             WHERE items.user_id = :user_id
+               AND items.work_id = :work_id
+             ORDER BY items.id'
+        );
+
+        $itemStmt->execute([
+            ':user_id' => $user_id,
+            ':work_id' => $edit_work['work_id']
+        ]);
+
+        $edit_items = $itemStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+
 // 作品完了ボタンを押したときの処理
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -140,6 +189,14 @@ $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         data-price="<?= htmlspecialchars($part['price'], ENT_QUOTES, 'UTF-8') ?>"
                         draggable="true" 
                         style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px; cursor: grab; border: 1px solid #eee;">
+
+                    <p class="part-name">
+                        <?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?>
+                    </p>
+
+                    <p class="part-price">
+                        ¥<?= number_format((int)$part['price']) ?>
+                    </p>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -152,7 +209,7 @@ $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div>
             <p>この作品のタイトルを入力してください</p>
-            <input type="text" name="work_title">
+            <input type="text" name="work_title" value="<?= htmlspecialchars($edit_work['title'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
         </div>
         <div style="margin-top: 15px; text-align: center;">
             <button id="save-btn" style="padding: 10px 30px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">作品を保存する</button>
@@ -160,6 +217,14 @@ $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- ドラッグ＆ドロップを簡単に実装できるライブラリ（Konva.js）を読み込む -->
         <script src="https://unpkg.com/konva@9.3.1/konva.min.js"></script>
+        
+        <!-- 既存パーツがあれば渡す -->
+        <script>
+            window.initialWorkspace = <?= json_encode(
+                $edit_items ?? [],
+                JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+            ) ?>;
+        </script>
         <!-- メインの処理を書くJSファイル -->
         <script src="assets/js/canvas.js"></script>
     </main>

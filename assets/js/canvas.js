@@ -9,6 +9,44 @@ const stage = new Konva.Stage({
 const layer = new Konva.Layer();
 stage.add(layer);
 
+function addPartToCanvas(partData, x, y, rotation = 0) {
+    const image = new Image();
+
+    image.onload = () => {
+        const widthPx = Number(partData.width_mm) * PX_PER_MM;
+        const heightPx = Number(partData.height_mm) * PX_PER_MM;
+
+        const imageNode = new Konva.Image({
+            image: image,
+            x: Number(x),
+            y: Number(y),
+            width: widthPx,
+            height: heightPx,
+            offsetX: widthPx / 2,
+            offsetY: heightPx / 2,
+            rotation: Number(rotation),
+            draggable: true,
+            partId: Number(partData.part_id ?? partData.partId),
+            partName: partData.parts_name ?? partData.partName,
+            price: Number(partData.price) || 0
+        });
+
+        imageNode.on('click tap', () => {
+            tr.nodes([imageNode]);
+        });
+
+        layer.add(imageNode);
+        layer.draw();
+        updateTotalPrice();
+    };
+
+    image.onerror = () => {
+        console.error('画像読み込み失敗:', partData.image_path);
+    };
+
+    image.src = partData.image_path;
+}
+
 function updateTotalPrice() {
     const totalPriceElement = document.getElementById('total-price');
     let totalPrice = 0;
@@ -180,3 +218,14 @@ document.getElementById('save-btn').addEventListener('click', () => {
         console.error(error);
     });
 });
+
+if (Array.isArray(window.initialWorkspace)) {
+    window.initialWorkspace.forEach(item => {
+        addPartToCanvas(
+            item,
+            item.x_set,
+            item.y_set,
+            item.rotation
+        );
+    });
+}
