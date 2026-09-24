@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+// ★
+require_once '/var/www/includes/db.php';
+require_once '/var/www/includes/functions.php';
+
 if (!isset($_SESSION['user_id'])) {
     echo 'あなたはまだログインしていません';
     header('Location: ../auth/login.php');
@@ -16,9 +20,6 @@ $user_name = $_SESSION['user_name'];
  * $_SESSION['user_name']
  * をセットする想定
  */
-
-require_once '/var/www/includes/db.php';
-require_once '/var/www/includes/functions.php';
 
 // 最新の作品をすべて取得
 $stmt = $pdo->prepare(
@@ -45,6 +46,7 @@ $all_works = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
+    <!-- ★ヘッダー表示 -->
     <?php require_once '/var/www/includes/header.php'; ?>
 
     <h1>ホーム</h1>

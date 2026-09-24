@@ -1,6 +1,7 @@
 <?php
 session_start();
-//データベースへアクセス
+
+//★データベースへアクセス
 require_once '/var/www/includes/db.php';
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
@@ -40,7 +41,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     <head>
         <meta charset="UTF-8">
         <title>ログイン</title>
-        <link rel="stylesheet" href="/var/www/assets/css/auth_style.css">
+        <link rel="stylesheet" href="../assets/css/auth_style.css">
     </head>
     <body>
         <div class="form-container">

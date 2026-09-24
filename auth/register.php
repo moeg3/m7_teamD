@@ -1,6 +1,6 @@
 <?php
 session_start();
-//データベースに接続
+// ★データベースに接続
 require_once '/var/www/includes/db.php';
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
@@ -37,7 +37,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     <head>
         <meta charset="UTF-8">
         <title>初回登録</title>
-        <link rel="stylesheet" href="auth_style.css">
+        <link rel="stylesheet" href="../assets/css/auth_style.css">
     </head>
     <body>
         <div class="form-container">
