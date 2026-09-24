@@ -1,6 +1,7 @@
 <?php
+session_start();
 //データベースへアクセス
-require_once '../includes/my_db.php';
+require_once '/var/www/includes/db.php';
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
     //ログインフォームから受け取る
@@ -8,7 +9,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     $password=$_POST["password"] ??'';
     
     //ユーザー名をユーザーから検索
-    $sql= " SELECT* FROM USERS WHERE user_name=:user_name";
+    $sql= " SELECT* FROM users WHERE user_name=:user_name";
     
     $stmt= $pdo -> prepare($sql);
     $stmt -> bindValue(':user_name' , $user_name , PDO::PARAM_STR);
@@ -22,7 +23,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
         $_SESSION["user_name"] = $user_data["user_name"];
         
         // ログイン成功 → トップページ画面へ移動
-        header("Location: ../index (4).php");
+        header("Location: ../index.php");
         exit;
         
     }
@@ -33,16 +34,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     }
 }
 ?>
-        
-    </body>
-</html>
 
 <!DOCTYPE html>
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
         <title>ログイン</title>
-        <link rel="stylesheet" href="auth_style.css">
+        <link rel="stylesheet" href="/var/www/assets/css/auth_style.css">
     </head>
     <body>
         <div class="form-container">
@@ -64,7 +62,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             
             <div class="form-link">
                 <p>アカウントを持っていない方は</p>
-                <a href="register.html">新規登録</a>
+                <a href="register.php">新規登録</a>
             </div>
         </div>
     </body>

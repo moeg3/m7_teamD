@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <title>ヘッダー</title>
-        <link rel="stylesheet" href="../assets/css/style.css">
-    </head>    
-    <header>
-    </header>
-</html>
+<header>
+    <h1 class="title">推しクラ</h1>
+    <nav class="nav">
+        <ul class="menu">
+            <li class="menu-item"><a href="/index.php">ホーム</a></li>
+            <li class="menu-item"><a href="/mypage.php">マイページ</a></li>
+            <li class="menu-item"><a href="/workspace.php">新規ワークスペース</a></li>
+        </ul>
+    </nav>
+</header>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 //データベースに接続
-require_once '../includes/my_db.php';
+require_once '/var/www/includes/db.php';
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
     //新規登録処理
@@ -18,7 +18,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         
         //// USERSテーブルに登録 
-        $sql = "INSERT INTO USERS (user_name, password) VALUES (:user_name, :password)"; 
+        $sql = "INSERT INTO users (user_name, password) VALUES (:user_name, :password)"; 
         $stmt = $pdo->prepare($sql); 
         
         $stmt->bindValue(':user_name', $user_name, PDO::PARAM_STR);
@@ -26,9 +26,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
         $stmt->execute(); 
         
         // 登録成功 → ログイン画面へ移動
-        header("Location: login.html");
-        exit;
-        
+        header("Location: login.php");
+        exit;   
     }
 }
 ?>
@@ -62,7 +61,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             
             <div class="form-link">    
                 <p>アカウントを持っている方は</p>
-                <a href="login.html">ログイン</a>
+                <a href="login.php">ログイン</a>
             </div>
         </div>
     </body>
