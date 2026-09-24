@@ -2,7 +2,7 @@
 // 管理者専用ページ
 // http://localhost/handmade_app/admin/setup.phpからデータベース内にテーブルを作成
 
-// 保存している各自のフォルダ構造からパス名を変更してください
+// ★保存している各自のフォルダ構造からパス名を変更してください
 require_once '/var/www/includes/db.php';
 
 try {

@@ -10,3 +10,7 @@ session_destroy();
 header("Location: login.php");
 exit;
 ?>
+
+<html>
+    <p>ログアウトしました！</p>
+</html>

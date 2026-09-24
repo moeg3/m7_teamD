@@ -9,7 +9,19 @@ const stage = new Konva.Stage({
 const layer = new Konva.Layer();
 stage.add(layer);
 
-const PX_PER_MM = 0.5; // 変更必要 標準は4
+function updateTotalPrice() {
+    const totalPriceElement = document.getElementById('total-price');
+    let totalPrice = 0;
+
+    layer.getChildren(node => node.className === 'Image').forEach(node => {
+        totalPrice += Number(node.getAttr('price')) || 0;
+    });
+
+    totalPriceElement.textContent = totalPrice.toLocaleString();
+}
+
+const PX_PER_MM = 0.8; // 変更必要 標準は4
+
 const tr = new Konva.Transformer({
     enabledAnchors: [], 
     rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315]
@@ -25,8 +37,11 @@ document.querySelectorAll('.drag-item').forEach(item => {
     item.addEventListener('dragstart', (e) => {
         const dataToTransfer = JSON.stringify({
             src: e.currentTarget.dataset.imagePath,
-            sizeMm: parseFloat(e.currentTarget.dataset.sizeMm) || 10,
-            partId: e.currentTarget.dataset.partId
+            wSizeMm: parseFloat(e.currentTarget.dataset.wSizeMm) || 10,
+            hSizeMm: parseFloat(e.currentTarget.dataset.hSizeMm) || 10,
+            partId: e.currentTarget.dataset.partId,
+            partName: e.currentTarget.dataset.partName,
+            price: parseInt(e.currentTarget.dataset.price, 10) || 0
         });
 
         console.log('ドラッグデータ:', dataToTransfer);
@@ -59,7 +74,8 @@ containerElement.addEventListener('drop', (e) => {
     const rect = containerElement.getBoundingClientRect();
     const dropX = e.clientX - rect.left;
     const dropY = e.clientY - rect.top;
-    const sizePx = draggedData.sizeMm * PX_PER_MM;
+    const widthPx = draggedData.wSizeMm * PX_PER_MM;
+    const heightPx = draggedData.hSizeMm * PX_PER_MM;
 
     const image = new Image();
 
@@ -70,12 +86,14 @@ containerElement.addEventListener('drop', (e) => {
             image: image,
             x: dropX,
             y: dropY,
-            width: sizePx,
-            height: sizePx,
-            offsetX: sizePx / 2,
-            offsetY: sizePx / 2,
+            width: widthPx,
+            height: heightPx,
+            offsetX: widthPx / 2,
+            offsetY: heightPx / 2,
             draggable: true,
-            partId: draggedData.partId
+            partId: draggedData.partId,
+            partName: draggedData.partName,
+            price: draggedData.price
         });
 
         imageNode.on('click tap', () => {
@@ -84,6 +102,7 @@ containerElement.addEventListener('drop', (e) => {
 
         layer.add(imageNode);
         layer.draw();
+        updateTotalPrice();
     };
 
     image.onerror = () => {
@@ -118,8 +137,17 @@ document.getElementById('save-btn').addEventListener('click', () => {
     // Konvaの機能でキャンバスのスクリーンショットを撮影（Base64文字列に変換）
     const dataURL = stage.toDataURL({ pixelRatio: 1 });
 
+    // 作品のタイトル
+    const workTitle = document.querySelector('[name="work_title"]').value.trim();
+
+    if (workTitle === '') {
+        alert('作品タイトルを入力してください。');
+        return;
+    }
+
     // 画像データとパーツデータの両方を1つの荷物にまとめる
     const workData = {
+        work_title: workTitle,
         thumbnail: dataURL,
         items: itemsData
     };

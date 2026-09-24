@@ -13,11 +13,15 @@ $user_id = (int)$_SESSION['user_id'];
 
 // 作品完了ボタンを押したときの処理
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     // 送られてきたJSONデータを読み込む
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
-    if ($data !== null && isset($data['thumbnail']) && isset($data['items'])) {
+    if ($data !== null && 
+        isset($data['thumbnail'], $data['items'], $data['work_title'])) {
+        
+        $work_title = trim($data['work_title']);
         $items = $data['items'] ?? [];
         $thumbnail = $data['thumbnail'] ?? '';
 
@@ -61,14 +65,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // worksテーブル内にデータを追加
             $thumbStmt = $pdo->prepare(
                 'INSERT INTO works
-                (user_id, work_id, thumbnail_path)
+                (user_id, work_id, title, thumbnail_path)
                 VALUES
-                (:user_id, :work_id, :thumbnail_path)'
+                (:user_id, :work_id, :title, :thumbnail_path)'
             );
 
             $thumbStmt->execute([
                 ':user_id' => $user_id,
                 ':work_id' => $work_id,
+                ':title' => $work_title,
                 ':thumbnail_path' => $thumbnail_path
             ]);
 
@@ -127,15 +132,28 @@ $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <img class="drag-item" 
                         src="<?= htmlspecialchars($part['image_path'], ENT_QUOTES, 'UTF-8') ?>" 
                         data-image-path="<?= htmlspecialchars($part['image_path'], ENT_QUOTES, 'UTF-8') ?>"
-                        data-size-mm="<?= htmlspecialchars($part['width_mm'], ENT_QUOTES, 'UTF-8') ?>" 
+                        data-w-size-mm="<?= htmlspecialchars($part['width_mm'], ENT_QUOTES, 'UTF-8') ?>" 
+                        data-h-size-mm="<?= htmlspecialchars($part['height_mm'], ENT_QUOTES, 'UTF-8') ?>"
                         data-part-id="<?= htmlspecialchars($part['id'], ENT_QUOTES, 'UTF-8') ?>" 
                         title="<?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?> - ¥<?= htmlspecialchars($part['price'], ENT_QUOTES, 'UTF-8') ?>"
+                        data-part-name="<?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?>"
+                        data-price="<?= htmlspecialchars($part['price'], ENT_QUOTES, 'UTF-8') ?>"
                         draggable="true" 
                         style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px; cursor: grab; border: 1px solid #eee;">
                 <?php endforeach; ?>
             </div>
         </div>
 
+        <div id="selected-parts">
+            <h3>選択中のパーツ</h3>
+            <ul id="parts-list"></ul>
+            <p>合計金額: <span id="total-price">0</span>円</p>
+        </div>
+
+        <div>
+            <p>この作品のタイトルを入力してください</p>
+            <input type="text" name="work_title">
+        </div>
         <div style="margin-top: 15px; text-align: center;">
             <button id="save-btn" style="padding: 10px 30px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">作品を保存する</button>
         </div>
