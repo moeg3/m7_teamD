@@ -95,12 +95,21 @@ $my_works = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <body>
         <!-- ★ヘッダー表示 -->
         <?php require_once '/var/www/includes/header.php'; ?>
+        <main class="mypage">
+            <h2 class="mypage-title">自分の作品一覧</h2>
 
-        <h2>マイページ（自分の作品）</h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-            <?php foreach ($my_works as $work): ?>
-                <?php render_work_card($work, $user_id); ?>
-            <?php endforeach; ?>
-        </div>
+            <div class="works-list">
+                <?php if (empty($my_works)): ?> 
+                    <div class="no-works"> 
+                    <p>まだ作品がありません。</p>
+                    </div>
+                    
+                    <?php else: ?>
+                    <?php foreach ($my_works as $work): ?>
+                        <?php render_work_card($work, $user_id); ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </main>
     </body>
 </html>

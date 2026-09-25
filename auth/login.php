@@ -44,26 +44,28 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
         <link rel="stylesheet" href="../assets/css/auth_style.css">
     </head>
     <body>
-        <div class="form-container">
-            <h1>ログイン</h1>
-            <?php
-            if(isset($error)){
-            echo "<p>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</p>";
-            }
-            ?>
-            
-            <form action="login.php" method="post">
-                <label>ユーザーネーム</label>
-                <input name="user_name" type="text" required>
-                <label>パスワード</label>
-                <input name="password" type="password" required>
+        <div class="login-area">
+            <div class="form-container">
+                <h1>ログイン</h1>
+                <?php
+                if(isset($error)){
+                echo "<p>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</p>";
+                }
+                ?>
                 
-                <input name="submit" type="submit" value="ログイン">
-            </form>
-            
-            <div class="form-link">
-                <p>アカウントを持っていない方は</p>
-                <a href="register.php">新規登録</a>
+                <form action="login.php" method="post">
+                    <label>ユーザーネーム</label>
+                    <input name="user_name" type="text" required>
+                    <label>パスワード</label>
+                    <input name="password" type="password" required>
+                    
+                    <input name="submit" type="submit" value="ログイン">
+                </form>
+                
+                <div class="form-link">
+                    <p>アカウントを持っていない方は</p>
+                    <a href="register.php">新規登録</a>
+                </div>
             </div>
         </div>
     </body>

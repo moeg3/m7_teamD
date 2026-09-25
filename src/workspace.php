@@ -73,22 +73,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $work_title = trim($data['work_title']);
         $items = $data['items'] ?? [];
         $thumbnail = $data['thumbnail'] ?? '';
+        $editWorkId = filter_var(
+            $data['edit_id'] ?? $_GET['edit_id'] ?? null,
+            FILTER_VALIDATE_INT
+        );
 
         try {
             $pdo->beginTransaction();
 
-            // itemsテーブル内のwork_idを取得して設定
-            $workIdStmt = $pdo->prepare(
-                'SELECT COALESCE(MAX(work_id), 0) + 1
-                 FROM items
-                 WHERE user_id = :user_id'
-            );
+            $oldThumbnailPath = null;
+            if ($editWorkId) {
+                $existingWorkStmt = $pdo->prepare(
+                    'SELECT work_id, thumbnail_path
+                     FROM works
+                     WHERE id = :id AND user_id = :user_id'
+                );
+                $existingWorkStmt->execute([
+                    ':id' => $editWorkId,
+                    ':user_id' => $user_id
+                ]);
+                $existingWork = $existingWorkStmt->fetch(PDO::FETCH_ASSOC);
 
-            $workIdStmt->execute([
-                ':user_id' => $user_id
-            ]);
+                if (!$existingWork) {
+                    throw new RuntimeException('編集対象の作品が見つかりません');
+                }
 
-            $work_id = (int)$workIdStmt->fetchColumn();
+                $work_id = (int)$existingWork['work_id'];
+                $oldThumbnailPath = $existingWork['thumbnail_path'];
+            } else {
+                $workIdStmt = $pdo->prepare(
+                    'SELECT COALESCE(MAX(work_id), 0) + 1
+                     FROM items
+                     WHERE user_id = :user_id'
+                );
+                $workIdStmt->execute([':user_id' => $user_id]);
+                $work_id = (int)$workIdStmt->fetchColumn();
+            }
 
             // ★作品サムネイルの画像ファイルを保存
             $uploadDirectory = '/var/www/html/assets/images/works/';
@@ -97,11 +117,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 mkdir($uploadDirectory, 0775, true);
             }
 
-            preg_match('/^data:image\/png;base64,(.+)$/', $thumbnail, $matches);
+            if (!preg_match('/^data:image\/png;base64,(.+)$/', $thumbnail, $matches)) {
+                throw new RuntimeException('サムネイル画像の形式が不正です');
+            }
 
             $imageData = base64_decode($matches[1], true);
 
-            $fileName = 'user' . $user_id . 'work' . $work_id . '.png';
+            if ($imageData === false) {
+                throw new RuntimeException('サムネイル画像の変換に失敗しました');
+            }
+
+            $fileName = 'user' . $user_id . 'work' . $work_id;
+            if ($editWorkId) {
+                $fileName .= '_' . date('YmdHis') . '_' . bin2hex(random_bytes(4));
+            }
+            $fileName .= '.png';
             $filePath = $uploadDirectory . $fileName;
 
             if (file_put_contents($filePath, $imageData) === false) {
@@ -111,20 +141,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // ★
             $thumbnail_path = 'assets/images/works/' . $fileName;
 
-            // worksテーブル内にデータを追加
-            $thumbStmt = $pdo->prepare(
-                'INSERT INTO works
-                (user_id, work_id, title, thumbnail_path)
-                VALUES
-                (:user_id, :work_id, :title, :thumbnail_path)'
-            );
+            if ($editWorkId) {
+                $updateWorkStmt = $pdo->prepare(
+                    'UPDATE works
+                     SET title = :title, thumbnail_path = :thumbnail_path
+                     WHERE id = :id AND user_id = :user_id'
+                );
+                $updateWorkStmt->execute([
+                    ':title' => $work_title,
+                    ':thumbnail_path' => $thumbnail_path,
+                    ':id' => $editWorkId,
+                    ':user_id' => $user_id
+                ]);
 
-            $thumbStmt->execute([
-                ':user_id' => $user_id,
-                ':work_id' => $work_id,
-                ':title' => $work_title,
-                ':thumbnail_path' => $thumbnail_path
-            ]);
+                $deleteItemsStmt = $pdo->prepare(
+                    'DELETE FROM items
+                     WHERE user_id = :user_id AND work_id = :work_id'
+                );
+                $deleteItemsStmt->execute([
+                    ':user_id' => $user_id,
+                    ':work_id' => $work_id
+                ]);
+            } else {
+                $insertWorkStmt = $pdo->prepare(
+                    'INSERT INTO works
+                    (user_id, work_id, title, thumbnail_path)
+                    VALUES
+                    (:user_id, :work_id, :title, :thumbnail_path)'
+                );
+                $insertWorkStmt->execute([
+                    ':user_id' => $user_id,
+                    ':work_id' => $work_id,
+                    ':title' => $work_title,
+                    ':thumbnail_path' => $thumbnail_path
+                ]);
+            }
 
             // itemsテーブル内にデータを追加
             $itemStmt = $pdo->prepare(
@@ -146,12 +197,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $pdo->commit();
+
+            if (
+                $oldThumbnailPath
+                && $oldThumbnailPath !== $thumbnail_path
+                && str_starts_with($oldThumbnailPath, 'assets/images/works/')
+            ) {
+                $oldThumbnailFile = '/var/www/html/' . $oldThumbnailPath;
+                if (is_file($oldThumbnailFile)) {
+                    unlink($oldThumbnailFile);
+                }
+            }
             
             // JavaScript側に成功メッセージだけを返して、ここでPHPを強制終了（exit）
             echo count($items) . " 件のパーツデータをデータベースに記録しました。";
             exit; 
             
-        } catch (PDOException $e) {
+        } catch (Throwable $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             echo "データベースエラー: " . $e->getMessage();
             exit;
         }
@@ -173,49 +238,41 @@ $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <!-- ★ヘッダー表示 -->
     <?php require_once '/var/www/includes/header.php'; ?>
-    <main>
-        <h2>作業キャンバス</h2>
+    <main class="editor-page">
+        <h2 class="page-title">作業キャンバス</h2>
 
-        <!-- flexboxを使って左右に並べる -->
-        <div style="display: flex; gap: 20px;">
+        <div class="editor-area">
+            <div class="canvas-card">
+                <div class="card-title">キャンバス</div>
+                <div id="canvas-container"></div>
+            </div>
 
-            <!-- 左側：キャンバスエリア -->
-            <div
-                id="canvas-container"
-                style="
-                    width: min(75vw, 1000px);
-                    height: min(70vh, 700px);
-                    min-height: 500px;
-                    background-color: #e5e5e5;
-                    border: 1px solid #999;
-                    margin: 0 auto;
-                "
-            ></div>
-            
-            <!-- 右側：パーツのパレットエリア -->
-            <div id="palette" style="width: 150px; background-color: #fff; border: 1px solid #ccc; padding: 10px;">
-                <p>パーツ一覧</p>
-                <?php foreach ($parts_list as $part): ?>
-                    <img class="drag-item" 
-                        src="<?= htmlspecialchars($part['image_path'], ENT_QUOTES, 'UTF-8') ?>" 
-                        data-image-path="<?= htmlspecialchars($part['image_path'], ENT_QUOTES, 'UTF-8') ?>"
-                        data-w-size-mm="<?= htmlspecialchars($part['width_mm'], ENT_QUOTES, 'UTF-8') ?>" 
-                        data-h-size-mm="<?= htmlspecialchars($part['height_mm'], ENT_QUOTES, 'UTF-8') ?>"
-                        data-part-id="<?= htmlspecialchars($part['id'], ENT_QUOTES, 'UTF-8') ?>" 
-                        title="<?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?> - ¥<?= htmlspecialchars($part['price'], ENT_QUOTES, 'UTF-8') ?>"
-                        data-part-name="<?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?>"
-                        data-price="<?= htmlspecialchars($part['price'], ENT_QUOTES, 'UTF-8') ?>"
-                        draggable="true" 
-                        style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px; cursor: grab; border: 1px solid #eee;">
+            <div id="palette">
+                <p class="palette-title">パーツ一覧</p>
+                <!-- 右側：パーツのパレットエリア -->
+                <div class="part-item">
+                    <?php foreach ($parts_list as $part): ?>
+                        <img class="drag-item" 
+                            src="<?= htmlspecialchars($part['image_path'], ENT_QUOTES, 'UTF-8') ?>" 
+                            data-image-path="<?= htmlspecialchars($part['image_path'], ENT_QUOTES, 'UTF-8') ?>"
+                            data-w-size-mm="<?= htmlspecialchars($part['width_mm'], ENT_QUOTES, 'UTF-8') ?>" 
+                            data-h-size-mm="<?= htmlspecialchars($part['height_mm'], ENT_QUOTES, 'UTF-8') ?>"
+                            data-part-id="<?= htmlspecialchars($part['id'], ENT_QUOTES, 'UTF-8') ?>" 
+                            title="<?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?> - ¥<?= htmlspecialchars($part['price'], ENT_QUOTES, 'UTF-8') ?>"
+                            data-part-name="<?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?>"
+                            data-price="<?= htmlspecialchars($part['price'], ENT_QUOTES, 'UTF-8') ?>"
+                            draggable="true" 
+                            >
 
-                    <p class="part-name">
-                        <?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?>
-                    </p>
+                        <p class="part-name">
+                            <?= htmlspecialchars($part['parts_name'], ENT_QUOTES, 'UTF-8') ?>
+                        </p>
 
-                    <p class="part-price">
-                        ¥<?= number_format((int)$part['price']) ?>
-                    </p>
-                <?php endforeach; ?>
+                        <p class="part-price">
+                            ¥<?= number_format((int)$part['price']) ?>
+                        </p>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
 
@@ -225,12 +282,12 @@ $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <p>合計金額: <span id="total-price">0</span>円</p>
         </div>
 
-        <div>
+        <div class="work-title-area">
             <p>この作品のタイトルを入力してください</p>
             <input type="text" name="work_title" value="<?= htmlspecialchars($edit_work['title'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
         </div>
-        <div style="margin-top: 15px; text-align: center;">
-            <button id="save-btn" style="padding: 10px 30px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">作品を保存する</button>
+        <div class="save-area">
+            <button id="save-btn">作品を保存する</button>
         </div>
 
         <!-- ドラッグ＆ドロップを簡単に実装できるライブラリ（Konva.js）を読み込む -->
@@ -242,6 +299,8 @@ $parts_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $edit_items ?? [],
                 JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
             ) ?>;
+
+            window.editWorkId = <?= json_encode($edit_id ?: null) ?>;
         </script>
         <!-- メインの処理を書くJSファイル -->
         <script src="assets/js/canvas.js"></script>
