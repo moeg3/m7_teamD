@@ -5,7 +5,7 @@ body {
 margin: 0;
 padding: 0;
 font-family: Arial, "Noto Sans JP", sans-serif;
-background-color: #f4f6f8; color: #333; 
+background-color: #fff8ef; color: #6b5548; 
 
 /* 中央に配置 */ 
 display: flex;
@@ -19,8 +19,9 @@ min-height: 100vh;
 width: 360px; 
 padding: 40px;
 background-color: white;
+border: 2px solid #f6d7b8;
 border-radius: 15px; 
-box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+box-shadow: 0 6px 20px rgba(220, 150, 90, 0.15);
 } 
 
 /* タイトル */ 
@@ -28,7 +29,7 @@ box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 text-align: center;
 margin-bottom: 30px; 
 font-size: 28px; 
-color: #333;
+color: #e9954f;
 } 
 
 /* ラベル */ 
@@ -46,7 +47,8 @@ width: 100%;
 box-sizing: border-box; 
 padding: 12px;
 margin-bottom: 20px;
-border: 1px solid #ccc;
+background-color: #fffaf5;
+border: 2px solid #f3d2b0;
 border-radius: 8px;
 font-size: 16px;
 outline: none;
@@ -54,7 +56,8 @@ outline: none;
 
 /* 入力欄をクリックしたとき */ 
 .form-container input[type="text"]:focus, .form-container input[type="password"]:focus{ 
-border-color: #4a90e2;
+border-color: #f0a866;
+box-shadow: 0 0 0 3px rgba(240, 168, 102, 0.2);
 }
 
 /* ボタン */
@@ -63,7 +66,7 @@ width: 100%;
 padding: 13px;
 border: none;
 border-radius: 8px;
-background-color: #4a90e2; 
+background: linear-gradient(135deg, #f5b56f, #e8893f);
 color: white;
 font-size: 16px;
 font-weight: bold;
@@ -72,7 +75,7 @@ cursor: pointer;
 
 /* ボタンにマウスを乗せたとき */ 
 .form-container input[type="submit"]:hover{
-background-color: #357abd;
+background: #e8893f;
 }
 
 /* ページ下部のリンク */ 
@@ -82,7 +85,7 @@ text-align: center; margin-top: 20px;
 
 /* リンク */ 
 .form-link a {
-color: #4a90e2;
+color: #d8752f;
 text-decoration: none;
 }
 

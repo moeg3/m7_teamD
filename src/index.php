@@ -38,40 +38,56 @@ $all_works = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ホーム</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ホーム</title>
+        <link rel="stylesheet" href="/assets/css/header_style.css">
+        <link rel="stylesheet" href="/assets/css/index_style.css">
+    </head>
 
-<body>
-    <!-- ★ヘッダー表示 -->
-    <?php require_once '/var/www/includes/header.php'; ?>
+    <body>
+        <!-- ★ヘッダー表示 -->
+        <?php require_once '/var/www/includes/header.php'; ?>
 
-    <h1>ホーム</h1>
+        <main class="home-page">
+            <!-- ユーザー情報 --> 
+            <section class="welcome-area">
+                <h1>ホーム</h1>
 
-    <!-- ログインしたユーザーの名前 -->
-    <p>
-        ようこそ、<?= htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8') ?>さん
-    </p>
+                <!-- ログインしたユーザーの名前 -->
+                <p>
+                    ようこそ、<span class="user-name"> <?= htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8') ?> </span>さん
+                </p>
+            </section>
 
-    <!-- 投稿・編集 -->
-    <div>
-        <a href="workspace.php">投稿</a>
-        <a href="mypage.php">編集</a>
-    </div>
+            <!-- 投稿・編集 -->
+            <nav class="home-menu">
+                <a href="workspace.php" class="menu-button"> 投稿 </a>
+                <a href="mypage.php" class="menu-button"> 編集 </a>
+            </nav>
 
-    <hr>
-
-    <h2>ユーザーの作品</h2>
-    
-    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-        <?php foreach ($all_works as $work): ?>
-            <!-- 関数を呼び出すだけでカードが生成される -->
-            <?php render_work_card($work, $user_id); ?>
-        <?php endforeach; ?>
-    </div>
-
-</body>
+            <hr>
+            <section class="works-section">
+                <h2 class="home-section-title">ユーザーの作品</h2>
+                <div class="works-list">
+                <?php
+                if (empty($all_works)):
+                ?> 
+                <div class="no-works"> 
+                    <p>まだ作品がありません。</p>
+                    <p>最初の作品を作ってみましょう！</p> 
+                </div> 
+                <?php else: ?>
+                <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <?php foreach ($all_works as $work): ?>
+                        <!-- 関数を呼び出すだけでカードが生成される -->
+                        <?php render_work_card($work, $user_id); ?>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+                </div>
+            </section>
+        </main>
+    </body>
 </html>

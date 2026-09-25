@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    background: #fff8ef;
+    color: #6b5548;
+    font-family: Arial, "Noto Sans JP", sans-serif;
+}
+
+.view-work-main {
+    width: min(900px, 100%);
+    margin: 40px auto;
+    padding: 0 20px 50px;
+}
+
+.view-work-main > h2 {
+    margin: 0 0 25px;
+    color: #e9954f;
+    font-size: 28px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.work-thumbnail {
+    display: block;
+    width: min(600px, 100%);
+    max-height: 650px;
+    margin: 0 auto 35px;
+    object-fit: contain;
+    background: #fffaf5;
+    border: 2px solid #f6d7b8;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(220, 150, 90, 0.15);
+}
+
+.view-work-main > h3 {
+    margin: 28px 0 14px;
+    color: #e9954f;
+    font-size: 21px;
+}
+
+.parts-list {
+    margin: 0;
+    padding: 18px 22px;
+    background: #ffffff;
+    border: 2px solid #f6d7b8;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(220, 150, 90, 0.12);
+    list-style: none;
+}
+
+.parts-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f6d7b8;
+}
+
+.parts-list li:last-child {
+    border-bottom: 0;
+}
+
+.purchase-link {
+    display: inline-block;
+    margin-left: auto;
+    padding: 7px 12px;
+    background: #e8893f;
+    color: #ffffff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.purchase-link:hover {
+    background: #d8752f;
+    transform: translateY(-2px);
+}
+
+.total-price {
+    margin: 24px 0 0;
+    padding: 16px 20px;
+    background: #fffaf5;
+    border: 2px solid #f0c89f;
+    border-radius: 12px;
+    color: #8a7062;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.total-price strong {
+    color: #e8893f;
+    font-size: 24px;
+}
+
+@media (max-width: 600px) {
+    .view-work-main {
+        margin: 25px auto;
+        padding: 0 14px 35px;
+    }
+
+    .parts-list li {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .purchase-link {
+        margin-left: 0;
+    }
+}

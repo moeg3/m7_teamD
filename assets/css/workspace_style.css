@@ -1,0 +1,598 @@
+/* =========================
+   全体
+========================= */
+
+body {
+margin: 0;
+background: #fff8ef;
+color: #6b5548;
+font-family:
+"Hiragino Kaku Gothic ProN",
+"Yu Gothic",
+sans-serif;
+}
+
+
+/* =========================
+   ページ
+========================= */
+
+.editor-page {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px 50px;
+}
+
+
+/* =========================
+   タイトル
+========================= */
+
+.page-title {
+    text-align: center;
+    color: #e9954f;
+    font-size: 28px;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+
+/* =========================
+   編集エリア
+========================= */
+
+.editor-area {
+     display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+
+/* =========================
+   キャンバスカード
+========================= */
+
+.canvas-card {
+    width: 700px;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 6px 20px rgba(220, 150, 90, 0.15);
+    border: 2px solid #f6d7b8;
+}
+
+.card-title {
+    color: #e9954f;
+    font-weight: bold;
+    font-size: 17px;
+    margin-bottom: 15px;
+}
+
+
+/* =========================
+   キャンバス
+========================= */
+
+#canvas-container {
+    width: 100%;
+    height: 500px;
+    background: #fffaf5;
+    border: 2px dashed #f0c89f;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+
+/* =========================
+   パーツ一覧
+========================= */
+
+#palette {
+    width: 180px;
+    background: white;
+    border-radius: 20px;
+    padding: 18px;
+    border: 2px solid #f6d7b8;
+    box-shadow: 0 6px 20px rgba(220, 150, 90, 0.15);
+}
+
+.palette-title {
+    text-align: center;
+    color: #e9954f;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+
+/* =========================
+   パーツ
+========================= */
+
+.part-item {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.drag-item {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+
+    background: #fff8ef;
+    border: 2px solid #f3d2b0;
+    border-radius: 15px;
+
+    padding: 6px;
+    cursor: grab;
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        border-color 0.2s;
+}
+
+.drag-item:hover {
+    transform: scale(1.08);
+    border-color: #f0a866;
+    box-shadow: 0 5px 12px rgba(230, 150, 80, 0.2);
+}
+
+.drag-item:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+
+/* =========================
+   保存ボタン
+========================= */
+
+.save-area {
+    text-align: center;
+    margin-top: 25px;
+}
+
+#save-btn {
+    border: none;
+    border-radius: 30px;
+
+    padding: 13px 40px;
+
+    background: linear-gradient(
+        135deg,
+        #f5b56f, 
+        #e8893f
+    );
+
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 12px rgba(220, 140, 60, 0.25);
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+#save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 18px rgba(220, 140, 60, 0.3);
+}
+
+#save-btn:active {
+    transform: translateY(1px);
+}
+
+/* =========================
+   ヘッダー
+========================= */
+
+header {
+    background: #ffffff;
+    border-bottom: 2px solid #f6d7b8;
+    padding: 15px 35px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 3px 12px rgba(220, 150, 90, 0.08);
+}
+
+header .title {
+    margin: 0;
+    color: #e9954f;
+    font-size: 25px;
+    letter-spacing: 2px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item a,
+.user-item a {
+    color: #6b5548;
+    text-decoration: none;
+    font-size: 14px;
+
+    transition: color 0.2s;
+}
+
+.menu-item a:hover,
+.user-item a:hover {
+    color: #e9954f;
+}
+
+.user-item {
+    color: #8a6d5c;
+    font-size: 14px;
+}
+
+
+/* =========================
+   選択中のパーツ
+========================= */
+
+#selected-parts {
+    margin-top: 25px;
+
+    background: #ffffff;
+
+    border: 2px solid #f6d7b8;
+    border-radius: 20px;
+
+    padding: 20px 25px;
+
+    box-shadow:
+        0 6px 20px rgba(220, 150, 90, 0.12);
+}
+
+#selected-parts h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+
+    color: #e9954f;
+    font-size: 18px;
+}
+
+#parts-list {
+    list-style: none;
+
+    margin: 0;
+    padding: 0;
+}
+
+#parts-list li {
+    padding: 8px 12px;
+
+    margin-bottom: 6px;
+
+    background: #fff8ef;
+
+    border-radius: 10px;
+
+    color: #6b5548;
+    font-size: 14px;
+}
+
+
+/* =========================
+   合計金額
+========================= */
+
+#selected-parts > p {
+    margin: 15px 0 0;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #f3d2b0;
+
+    text-align: right;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    color: #6b5548;
+}
+
+#total-price {
+    color: #e8893f;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    margin-left: 5px;
+}
+
+
+/* =========================
+   作品タイトル入力
+========================= */
+
+.work-title-area {
+    margin-top: 25px;
+
+    background: #ffffff;
+
+    border: 2px solid #f6d7b8;
+    border-radius: 20px;
+
+    padding: 20px 25px;
+
+    box-shadow:
+        0 6px 20px rgba(220, 150, 90, 0.12);
+}
+
+.work-title-area p {
+    margin-top: 0;
+    margin-bottom: 10px;
+
+    color: #e9954f;
+    font-weight: bold;
+}
+
+input[name="work_title"] {
+    width: 100%;
+    max-width: 600px;
+
+    padding: 12px 15px;
+
+    border: 2px solid #f3d2b0;
+    border-radius: 12px;
+
+    background: #fffaf5;
+
+    color: #6b5548;
+
+    font-size: 15px;
+
+    outline: none;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+input[name="work_title"]::placeholder {
+    color: #c9aa91;
+}
+
+input[name="work_title"]:focus {
+    border-color: #e9954f;
+
+    box-shadow:
+        0 0 0 3px rgba(233, 149, 79, 0.12);
+}
+
+
+/* =========================
+   ログインページへのリンク
+========================= */
+
+.login-required {
+    width: 400px;
+    max-width: 90%;
+
+    margin: 100px auto;
+
+    padding: 35px;
+
+    background: #ffffff;
+
+    border: 2px solid #f6d7b8;
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 6px 20px rgba(220, 150, 90, 0.15);
+}
+
+.login-required p {
+    color: #6b5548;
+}
+
+.login-required a {
+    display: inline-block;
+
+    margin-top: 10px;
+
+    padding: 10px 25px;
+
+    background: #e9954f;
+
+    color: white;
+
+    border-radius: 25px;
+
+    text-decoration: none;
+    font-weight: bold;
+
+    transition:
+        background 0.2s,
+        transform 0.2s;
+}
+
+.login-required a:hover {
+    background: #df8034;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   パーツ一覧のスクロール
+========================= */
+
+#palette {
+    width: 220px;
+}
+
+#palette::-webkit-scrollbar {
+    width: 6px;
+}
+
+#palette::-webkit-scrollbar-track {
+    background: #fff8ef;
+    border-radius: 10px;
+}
+
+#palette::-webkit-scrollbar-thumb {
+    background: #f0c89f;
+    border-radius: 10px;
+}
+
+#palette::-webkit-scrollbar-thumb:hover {
+    background: #e9954f;
+}
+
+.drag-item {
+    width: 100px;
+    height: 100px;
+}
+
+/* =========================
+   パーツ名・価格
+========================= */
+
+.part-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.part-name {
+    margin: 5px 0 2px;
+
+    text-align: center;
+
+    color: #6b5548;
+
+    font-size: 13px;
+}
+
+.part-price {
+    margin: 0 0 12px;
+
+    text-align: center;
+
+    color: #e8893f;
+
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   保存完了メッセージ
+========================= */
+
+.save-message {
+    margin: 15px auto;
+
+    padding: 12px 20px;
+
+    max-width: 500px;
+
+    background: #fff4df;
+
+    border: 1px solid #f3c994;
+    border-radius: 12px;
+
+    color: #8a633f;
+
+    text-align: center;
+}
+
+
+/* =========================
+   エラーメッセージ
+========================= */
+
+.error-message {
+    margin: 15px auto;
+
+    padding: 12px 20px;
+
+    max-width: 500px;
+
+    background: #fff0ed;
+
+    border: 1px solid #efb5a7;
+    border-radius: 12px;
+
+    color: #a45c4d;
+
+    text-align: center;
+}
+
+/* 作品表示 */
+.card-actions {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+
+/* =========================
+   スマホ対応
+========================= */
+
+@media (max-width: 700px) {
+
+    .editor-area {
+        flex-direction: column;
+    }
+
+    #palette {
+        width: auto;
+    }
+
+    .canvas-card {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #canvas-container {
+        height: 400px;
+    }
+
+    #palette {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .palette-title {
+        width: 100%;
+    }
+
+    .part-item {
+        margin: 0;
+    }
+}

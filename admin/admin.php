@@ -2,6 +2,7 @@
 // ★保存している各自のフォルダ構造からパス名を変更してください
 require_once '/var/www/includes/db.php';
 require_once '/var/www/includes/functions.php';
+
 $errors = [];
 $imagePath = '';
 
@@ -97,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo 'データベースに保存しました！';
     }
-}
+}$embed_url = "https://docs.google.com/document/d/e/2PACX-1vR_qn_L4B6ix40EO5wJvFijOXxpXePe2XLmsGdaqixaiN2u_Z5JqPQVBatpvQxLCzLHL9FNOMN8aNYm/pub";
 ?>
 
 <DOCTYPE html>
@@ -105,34 +106,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <head>
         <meta charset="UTF-8">
         <title>管理者用ページ</title>
+        <link rel="stylesheet" href="../assets/css/admin_style.css">
     </head>
     <body>
-        <h1>データベースを作成</h1>
-        <p>最初の一度だけ作成してください。</p>
-        <a href="setup.php">作成</a>
+        <div class="admin-page">            
+                <h1>データベースを作成</h1>
+            <div class="setup-area">
+                <p>最初の一度だけ作成してください。</p>
+                <a href="setup.php">作成</a>
+            </div>
 
-        <h2>パーツをデータベースに保存</h2>
-        <form action="" method="post" enctype="multipart/form-data">
-            <p>パーツ名</p>
-            <input type="text" name="parts_name">
+            <h2>パーツをデータベースに保存</h2>
+            <form action="" method="post" enctype="multipart/form-data">
+                <p>パーツ名</p>
+                <input type="text" name="parts_name">
 
-            <p>画像パス(.png/.jpeg/.gif/.webp形式のみ)</p>
-            <input type="file" name="image_file" accept="image/png,image/jpeg,image/gif,image/webp">
+                <p>画像パス(.png/.jpeg/.gif/.webp形式のみ)</p>
+                <input type="file" name="image_file" accept="image/png,image/jpeg,image/gif,image/webp">
 
-            <h3>大きさ</h3>
-                <p>横幅(mm)</p>
-                <input type="number" name="width_mm" step="0.01" min="0">
-                <p>縦幅(mm)</p>
-                <input type="number" name="height_mm" step="0.01" min="0">
+                <h3>大きさ</h3>
+                    <p>横幅(mm)</p>
+                    <input type="number" name="width_mm" step="0.01" min="0">
+                    <p>縦幅(mm)</p>
+                    <input type="number" name="height_mm" step="0.01" min="0">
 
-            <p>購入リンク</p>
-            <input type="text" name="url_link">
+                <p>購入リンク</p>
+                <input type="text" name="url_link">
 
-            <p>金額</p>
-            <input type="number" name="amount">
+                <p>金額</p>
+                <input type="number" name="amount">
 
-            <br />
-            <input name="submit" type="submit" value="登録">
-        </form>
+                <br />
+                <input name="submit" type="submit" value="登録">
+            </form>
+
+            <div class="transpage-item">
+                <h1>サービス画面へ移動</h1>
+                    <h2>まだログインしていない方はこちら</h2>
+                        <a href="../auth/register.php">新規登録ページへ</a>
+                    <h2>ログインしたことのある方はこちら</h2>
+                        <a href="../auth/login.php">ログインページへ</a>
+            </div>
+        </div>
+        <iframe src="<?php echo htmlspecialchars($embed_url, ENT_QUOTES, 'UTF-8'); ?>" 
+                width="90%" 
+                height="100%" 
+                style="border: none; 
+                       display: block;
+                       margin: 0 auto;">
     </body>
 </html>

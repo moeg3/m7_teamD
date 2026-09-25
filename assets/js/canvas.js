@@ -246,13 +246,14 @@ document.getElementById('save-btn').addEventListener('click', () => {
 
     // 画像データとパーツデータの両方を1つの荷物にまとめる
     const workData = {
+        edit_id: window.editWorkId,
         work_title: workTitle,
         thumbnail: dataURL,
         items: itemsData
     };
 
     // fetchを使って、画面を切り替えずに裏側でPHPへデータを送信する
-    fetch('workspace.php', {
+    fetch(window.location.href, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

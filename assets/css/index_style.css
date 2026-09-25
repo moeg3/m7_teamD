@@ -1,0 +1,186 @@
+body {
+margin: 0;
+background: #fff8ef;
+color: #6b5548;
+font-family:
+"Hiragino Kaku Gothic ProN",
+"Yu Gothic",
+sans-serif;
+}
+
+/* ========================= ホームページ ========================= */ 
+.home-page
+{
+max-width: 1100px;
+margin: 40px auto;
+padding: 0 20px 50px;
+}
+
+/* ========================= ようこそエリア ========================= */ 
+.welcome-area
+{
+text-align: center;
+background: white; 
+border: 2px solid #f6d7b8;
+border-radius: 25px;
+padding: 30px 20px; 
+box-shadow: 0 6px 20px rgba(220, 150, 90, 0.15);
+}
+
+.welcome-area h1 
+{ 
+color: #e9954f;
+font-size: 30px; 
+margin: 0 0 15px; 
+letter-spacing: 2px;
+} 
+
+.welcome-area p 
+{
+color: #8a7062; 
+font-size: 15px; margin: 0;
+}
+
+.user-name 
+{
+color: #e9954f; 
+font-weight: bold; 
+}
+
+/* ========================= メニューボタン ========================= */
+.home-menu 
+{
+display: flex; 
+justify-content: center;
+gap: 20px; margin: 30px 0 40px; 
+}
+
+.menu-button
+{
+display: block;
+min-width: 180px; 
+padding: 13px 25px; 
+background: linear-gradient(135deg, #f5b56f, #e8893f);
+color: white;
+text-align: center;
+text-decoration: none;
+border-radius: 30px; 
+font-size: 15px;
+font-weight: bold;
+box-shadow: 0 5px 12px rgba(220, 140, 60, 0.25);
+transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.menu-button:hover 
+{
+transform: translateY(-3px); 
+box-shadow: 0 8px 18px rgba(220, 140, 60, 0.3);
+}
+
+/* ========================= 作品一覧 ========================= */ 
+.works-section
+{
+margin-top: 20px; }
+
+.home-section-title
+{
+text-align: center; 
+color: #e9954f; 
+font-size: 24px; 
+margin-bottom: 25px;
+letter-spacing: 1px; 
+}
+
+.works-list 
+{
+display: flex;
+flex-wrap: wrap; 
+justify-content: center;
+gap: 25px;
+}
+
+/* ========================= 作品カード ========================= */
+.work-card { 
+width: 220px;
+background: white;
+border: 2px solid #f6d7b8; 
+border-radius: 20px; 
+padding: 15px; 
+box-sizing:
+border-box;
+box-shadow: 0 6px 20px rgba(220, 150, 90, 0.15);
+transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+.work-card:hover
+{
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(220, 150, 80, 0.25);
+}
+
+.work-card img 
+{
+width: 100%; height: 180px;
+object-fit: cover;
+object-position: center;
+background: #fffaf5; 
+border-radius: 15px; 
+border: 1px solid #f3d2b0;
+}
+
+/* ========================= 作品がない場合 ========================= */
+.no-works
+{
+text-align: center;
+color: #8a7062;
+background: white;
+border: 2px dashed #f0c89f;
+border-radius: 20px;
+padding: 40px; 
+margin: 0 auto;
+max-width: 500px; 
+}
+
+/* 作品表示 */
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.card-actions a,
+.card-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #f5b56f, #e8893f);
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(220, 140, 60, 0.2);
+}
+
+.card-actions form {
+    width: 100%;
+    margin: 0;
+}
+
+.card-actions form button {
+    width: 100%;
+}
+
+.card-actions a:hover,
+.card-actions button:hover {
+    background: #e8893f;
+    transform: translateY(-1px);
+}

@@ -94,19 +94,19 @@ $imagePath = htmlspecialchars(
 <head>
     <meta charset="UTF-8">
     <title><?= $title ?></title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/header_style.css">
+    <link rel="stylesheet" href="/assets/css/view_work_style.css">
 </head>
 <body>
     <!-- ★ヘッダー表示 -->
     <?php require_once '/var/www/includes/header.php'; ?>
 
-    <main>
+    <main class="view-work-main">
         <h2><?= $title ?></h2>
 
-        <img
+        <img class="work-thumbnail"
             src="<?= $imagePath ?>"
             alt="<?= $title ?>"
-            style="max-width: 600px; width: 100%;"
         >
 
         <h3>使用パーツ</h3>
@@ -114,7 +114,7 @@ $imagePath = htmlspecialchars(
         <?php if ($partSummary === []): ?>
             <p>使用パーツはありません。</p>
         <?php else: ?>
-            <ul>
+            <ul class="parts-list">
                 <?php foreach ($partSummary as $part): ?>
                     <li>
                         <?= htmlspecialchars($part['name'], ENT_QUOTES, 'UTF-8') ?>
@@ -126,7 +126,7 @@ $imagePath = htmlspecialchars(
                                 href="<?= htmlspecialchars($part['url'], ENT_QUOTES, 'UTF-8') ?>"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style="margin-left: 10px; padding: 4px 8px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;"
+                                class="purchase-link"
                             >パーツを購入</a>
                         <?php endif; ?>
                     </li>
@@ -134,10 +134,10 @@ $imagePath = htmlspecialchars(
             </ul>
         <?php endif; ?>
 
-        <h3>
+        <p class="total-price">
             合計金額:
-            <?= number_format($totalPrice) ?>円
-        </h3>
+            <strong><?= number_format($totalPrice) ?>円</strong>
+        </p>
     </main>
 </body>
 </html>
