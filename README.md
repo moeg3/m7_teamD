@@ -1,4 +1,5 @@
 # Webアプリ「推しクラ」概要
+<a href="[https://moeg3.github.io/D_m7_%E7%99%BA%E8%A1%A8%E8%B3%87%E6%96%99.pdf](https://moeg3.github.io/D_m7_発表資料.pdf)" target="_blank" rel="noopener noreferrer">「推しクラ」発表資料（PDF）を新しいタブで見る</a>
 
 ## 1. サービスコンセプト
 * **アプリ名**: 推しクラ
