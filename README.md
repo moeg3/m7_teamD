@@ -49,7 +49,7 @@ GitHub上のプロジェクトを自分のPC（ローカル環境）にダウン
 
 1. **GitHubからプロジェクトをダウンロードする**
    ```bash
-   git clone [<ここにGitHubのリポジトリURLを貼り付ける>](https://github.com/moeg3/m7_teamD)
+   git clone https://github.com/moeg3/m7_teamD
    ```
 
 2. **ダウンロードしたフォルダに移動する**
