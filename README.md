@@ -1,5 +1,6 @@
 # Webアプリ「推しクラ」概要
 [「推しクラ」発表資料（PDF）を開く](https://moeg3.github.io/D_m7_%E7%99%BA%E8%A1%A8%E8%B3%87%E6%96%99.pdf)
+[D_m7_発表資料.pdf](https://github.com/user-attachments/files/33095024/D_m7_.pdf)
 
 ## 1. コンセプト
 * **アプリ名**: 推しクラ
