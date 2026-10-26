@@ -1,6 +1,8 @@
 # Webアプリ「推しクラ」概要
-[「推しクラ」発表資料（PDF）を開く](https://moeg3.github.io/D_m7_%E7%99%BA%E8%A1%A8%E8%B3%87%E6%96%99.pdf)
 
+<!--
+[「推しクラ」発表資料（PDF）を開く](https://moeg3.github.io/D_m7_%E7%99%BA%E8%A1%A8%E8%B3%87%E6%96%99.pdf)
+-->
 
 https://github.com/user-attachments/assets/02250b69-c78e-4116-bb64-bdbf00acbffe
 
